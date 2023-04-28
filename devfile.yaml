@@ -1,4 +1,4 @@
-schemaVersion: 2.2.0
+schemaVersion: 2.1.0
 metadata:
   name: go
   displayName: Go Runtime
@@ -9,7 +9,7 @@ metadata:
   projectType: Go
   language: Go
   provider: Red Hat
-  version: 2.0.0
+  version: 1.0.2
 starterProjects:
   - name: go-starter
     description: A Go project with a simple HTTP server
@@ -19,43 +19,16 @@ starterProjects:
       remotes:
         origin: https://github.com/devfile-samples/devfile-stack-go.git
 components:
-  - name: build
-    image:
-      imageName: go-image:latest
-      dockerfile:
-        uri: docker/Dockerfile
-        buildContext: .
-        rootRequired: false
-  - name: deploy
-    kubernetes:
-      uri: kubernetes/deploy.yaml
-      endpoints:
-      - name: http-8081
-        targetPort: 8081
   - container:
       endpoints:
         - name: http-go
           targetPort: 8080
       image: registry.access.redhat.com/ubi9/go-toolset:1.18.9-14
-      args: ['tail', '-f', '/dev/null']
+      args: ["tail", "-f", "/dev/null"]
       memoryLimit: 1024Mi
       mountSources: true
     name: runtime
 commands:
-  - id: build-image
-    apply:
-      component: build
-  - id: deployk8s
-    apply:
-      component: deploy
-  - id: deploy
-    composite:
-      commands:
-        - build-image
-        - deployk8s
-      group:
-        kind: deploy
-        isDefault: true
   - exec:
       env:
         - name: GOPATH
